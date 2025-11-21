@@ -1,0 +1,23 @@
+experiment_name: "EAST_ResNet50_ICDAR2015"
+data:
+  root_dir: "data/ICDAR2015/"            # Dataset root directory
+  train_dir: "Training/"                # Training images directory
+  test_dir: "Testing/"                  # Testing images directory
+  input_size: 512                       # Input image size
+  batch_size: 14                        # Batch size
+  num_workers: 4                        # Number of data loading workers
+  mean: [0.485, 0.456, 0.406]           # Mean values for normalization
+  std: [0.229, 0.224, 0.225]            # Variance values for normalization
+
+model:
+  backbone: "resnet50"                  # Backbone model
+  pretrained: True                      # Use pretrained weights
+
+train:
+  lr: 0.0001                            # Learning rate
+  max_epochs: 600                       # Maximum number of epochs
+  save_interval: 10                     # Model saving interval (in epochs)
+  log_interval: 10                      # Logging interval (in iterations)
+  lambda_geometry: 1.0                  # Weight for geometry loss
+
+device: "cuda"                          # Device to use for training
