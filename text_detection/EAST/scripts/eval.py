@@ -21,7 +21,7 @@ def evaluate():
         config = yaml.safe_load(f)
     
     device = torch.device(config["device"] if torch.cuda.is_available() else "cpu")
-    print(f"Evaluating on: {device}")
+    print(f"Evaluating on device: {device}")
     
     # Load Model
     model = EAST(
@@ -110,13 +110,13 @@ def evaluate():
         ["Num GT (Care)", metrics["n_pos"]] # Number of ground truth positives
     ]
     
-    print("\n" + "="*40)
+    print("\n" + "=" * 40)
     print(f"Experiment: {config['experiment_name']}")
     print(f"Checkpoint: {os.path.basename(ckpt_path)}")
-    print("="*40)
+    print("=" * 40)
     print(tabulate(results_table, headers="firstrow", tablefmt="fancy_grid"))
     print(f"Visualization saved to: {output_dir}")
-    print("="*40)
+    print("=" * 40)
 
     print(f"Evaluation finished. Results saved in {output_dir}")
 

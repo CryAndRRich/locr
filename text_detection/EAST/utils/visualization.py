@@ -5,11 +5,7 @@ import torch
 
 def draw_boxes(image: np.ndarray | torch.Tensor, 
                boxes: List[List[float]], 
-               output_path:str = None):
-    """
-    Vẽ bounding boxes lên ảnh.
-    boxes: List of [x1, y1, x2, y2, x3, y3, x4, y4, score] (8 coords + score)
-    """
+               output_path: str = None) -> np.ndarray:
     """
     Draw bounding boxes on the image
     

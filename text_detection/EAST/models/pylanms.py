@@ -78,12 +78,23 @@ def locality_aware_nms(boxes: List[np.ndarray],
     """
     Locality-Aware NMS
     """
-    if len(boxes) == 0:
+    if boxes is None or len(boxes) == 0:
         return []
-        
-    boxes = np.array(boxes)
-    indices = np.argsort(boxes[:, 8])[::-1]
+    boxes = np.array(boxes).astype(np.float32)
     
+    # Use C++ lanms if available for better performance
+    try:
+        import lanms
+        setup = True
+    except ImportError:
+        setup = False
+
+    if setup:
+        boxes = lanms.merge_quadrangle_n9(boxes, iou_threshold)
+        return boxes
+    
+    # Use Python implementation of Locality-Aware NMS
+    indices = np.argsort(boxes[:, 8])[::-1]
     polys = []
     for box in boxes:
         polys.append(Polygon(box[:8].reshape(4, 2)))
