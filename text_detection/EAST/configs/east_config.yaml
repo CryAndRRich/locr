@@ -15,7 +15,7 @@ model:
 
 train:
   lr: 0.001                             # Learning rate
-  max_epochs: 600                       # Maximum number of epochs
+  max_epochs: 500                       # Maximum number of epochs
   save_interval: 5                      # Model saving interval (in epochs)
   log_interval: 10                      # Logging interval (in iterations)
   lambda_geometry: 1.0                  # Weight for geometry loss

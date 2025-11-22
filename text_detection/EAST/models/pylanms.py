@@ -2,7 +2,8 @@ from typing import List
 import numpy as np
 from shapely.geometry import Polygon
 
-def intersection(g: Polygon, p: Polygon) -> float:
+def intersection(g: Polygon, 
+                 p: Polygon) -> float:
     """
     Calculate the Intersection over Union (IoU) of two polygons
     """
@@ -21,7 +22,8 @@ def intersection(g: Polygon, p: Polygon) -> float:
     except Exception:
         return 0
 
-def weighted_merge(g: np.ndarray, p: np.ndarray) -> np.ndarray:
+def weighted_merge(g: np.ndarray, 
+                   p: np.ndarray) -> np.ndarray:
     """
     Merge 2 boxes g and p based on their scores
     """
@@ -91,7 +93,7 @@ def locality_aware_nms(boxes: List[np.ndarray],
 
     if setup:
         boxes = lanms.merge_quadrangle_n9(boxes, iou_threshold)
-        return boxes
+        return np.array(boxes).astype(np.float32)
     
     # Use Python implementation of Locality-Aware NMS
     indices = np.argsort(boxes[:, 8])[::-1]

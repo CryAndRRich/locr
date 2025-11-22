@@ -1,7 +1,9 @@
+import math
+
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-import math
+
 from .backbone import ResNet50, VGG16BN
 
 class EAST(nn.Module):

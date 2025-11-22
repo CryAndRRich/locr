@@ -1,9 +1,11 @@
-from typing import List
+from typing import List, Union
+
 import cv2
+
 import numpy as np
 import torch
 
-def draw_boxes(image: np.ndarray | torch.Tensor, 
+def draw_boxes(image: Union[np.ndarray, torch.Tensor], 
                boxes: List[List[float]], 
                output_path: str = None) -> np.ndarray:
     """
@@ -24,11 +26,15 @@ def draw_boxes(image: np.ndarray | torch.Tensor,
     for box in boxes:
         if len(box) >= 8:
             pts = np.array(box[:8], dtype=np.int32).reshape((-1, 1, 2))
-            cv2.polylines(img_draw, [pts], True, (0, 255, 0), 2)
+            cv2.polylines(img_draw, [pts], isClosed=True, color=(0, 255, 0), thickness=2)
             
             if len(box) > 8:
-                score = box[1]
-                cv2.putText(img_draw, f"{score:.2f}", (pts, pts[2]), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 0, 0), 2)
+                score = box[-1] 
+                text_x = int(pts[0][0][0])
+                text_y = int(pts[0][0][1] - 5) 
+                
+                cv2.putText(img_draw, f"{score:.2f}", (text_x, text_y), 
+                            cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 2)
 
     if output_path:
         cv2.imwrite(output_path, img_draw)

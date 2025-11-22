@@ -1,12 +1,13 @@
 import os
 import sys
+sys.path.append(os.getcwd())
+
 import time
 import yaml
 import torch
+
 from torch.utils.data import DataLoader
 from torch import optim
-
-sys.path.append(os.getcwd())
 
 from data.dataset import ICDAR2015Dataset
 from models.east import EAST

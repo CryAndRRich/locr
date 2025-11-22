@@ -1,10 +1,13 @@
 from typing import Dict, Tuple
-import torch
+
+import cv2
+from shapely.geometry import Polygon
+
 import numpy as np
+import torch
+
 from models.pylanms import locality_aware_nms
 from models.east import EAST
-from shapely.geometry import Polygon
-import cv2
 
 def decode_predictions(score_map: np.ndarray, 
                        geo_map: np.ndarray, 
@@ -119,7 +122,12 @@ def detect(model: EAST,
     
     # Decode boxes
     boxes = decode_predictions(score_map, geo_map, score_thresh=conf_thresh)
-    
+
+    MAX_BOXES_BEFORE_NMS = 1000  
+    if len(boxes) > MAX_BOXES_BEFORE_NMS:
+        indices = np.argsort(boxes[:, 8])[::-1]
+        boxes = boxes[indices[:MAX_BOXES_BEFORE_NMS]]
+        
     if len(boxes) == 0:
         return []
     

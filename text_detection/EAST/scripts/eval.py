@@ -1,13 +1,14 @@
 import os
 import sys
+sys.path.append(os.getcwd())
+
 import yaml
 import cv2
-import torch
 import glob
 from tqdm import tqdm
 from tabulate import tabulate
 
-sys.path.append(os.getcwd())
+import torch
 
 from models.east import EAST
 from utils.evaluation import detect, Evaluator

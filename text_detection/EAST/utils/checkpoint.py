@@ -1,5 +1,5 @@
-import torch
 import os
+import torch
 
 def save_checkpoint(state, checkpoint_dir, filename="checkpoint.pth"):
     if not os.path.exists(checkpoint_dir):

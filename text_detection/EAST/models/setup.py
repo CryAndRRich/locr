@@ -204,20 +204,25 @@ setup(name='lanms_cpu', ext_modules=[ext])
 
 if __name__ == "__main__":
     if setup_lanms():
-        print("\n✅ BUILD SUCCESSFUL!")
+        print("\nBuild successful")
         # Check .so file
         so = glob.glob("lanms_cpu*.so")
-        print(f"   Shared Object: {so[0] if so else 'Missing'}")
+        print(f"Shared Object: {so[0] if so else 'Missing'}")
         
         # Test import
-        print("\n🧪 Testing Import...")
+        print("\nTesting Import...")
         try:
             import lanms
             if hasattr(lanms, 'merge_quadrangle_n9'):
                 print("Successfully imported 'lanms' module. Function found")
-                d = np.array([[10, 10, 20, 10, 20, 20, 10, 20, 0.9]], dtype=np.float32)
+                d = np.array([
+                    [10, 10, 20, 10, 20, 20, 10, 20, 0.9],
+                    [12, 12, 22, 12, 22, 22, 12, 22, 0.8],
+                    [30, 30, 40, 30, 40, 40, 30, 40, 0.7],
+                    [32, 32, 42, 32, 42, 42, 32, 42, 0.6]
+                ], dtype=np.float32)
                 res = lanms.merge_quadrangle_n9(d, 0.5)
-                print(f"   Success test execution: {res})")
+                print(f"Success test execution: {res})")
             else:
                 print("Import succeeded but function not found")
         except ImportError as e:
