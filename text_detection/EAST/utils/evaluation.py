@@ -1,7 +1,9 @@
+from typing import Dict, Tuple
 import torch
 import numpy as np
 from models.pylanms import locality_aware_nms
 from models.east import EAST
+from shapely.geometry import Polygon
 import cv2
 
 def decode_predictions(score_map: np.ndarray, 
@@ -133,3 +135,105 @@ def detect(model: EAST,
         boxes[:, [1, 3, 5, 7]] *= ratio_h
         
     return boxes
+
+class Evaluator():
+    def __init__(self, iou_thresh: float = 0.5) -> None:
+        self.iou_thresh = iou_thresh
+        self.reset()
+
+    def reset(self) -> None:
+        self.total_tp = 0
+        self.total_fp = 0
+        self.total_n_pos = 0
+
+    def compute_iou(self, 
+                    poly1: Polygon, 
+                    poly2: Polygon) -> float:
+        """
+        Calculate IoU between two polygons
+        """
+        if not poly1.is_valid or not poly2.is_valid:
+            return 0.0
+        inter = poly1.intersection(poly2).area
+        union = poly1.area + poly2.area - inter
+        if union == 0: 
+            return 0.0
+        return inter / union
+
+    def evaluate_image(self, 
+                       gt_polys: np.ndarray, 
+                       gt_tags: np.ndarray, 
+                       pred_boxes: np.ndarray) -> Tuple[int, int, int]:
+        """
+        Evaluate a single image's predictions against ground truth
+
+        Parameters:
+            gt_polys: Ground truth polygons, shape (N, 8)
+            gt_tags: Boolean array indicating "Don't Care" regions, shape (N,)
+            pred_boxes: Predicted bounding boxes, shape (M, 9)
+
+        Returns:
+            total_tp: Total True Positives
+            total_fp: Total False Positives
+            total_n_pos: Total number of positive samples in GT
+        """
+        gts = [Polygon(p.reshape(4, 2)) for p in gt_polys]
+        preds = [Polygon(p[:8].reshape(4, 2)) for p in pred_boxes]
+        
+        # Flags to indicate which GTs and Preds have been matched
+        gt_matched = [False] * len(gts)
+        pred_matched = [False] * len(preds)
+        
+        # Calculate number of positive GTs
+        n_pos = np.sum(~gt_tags)
+        
+        # Greedy Matching
+        for i, pred in enumerate(preds):
+            best_iou = -1
+            best_gt_idx = -1
+            
+            for j, gt in enumerate(gts):
+                if not gt_matched[j] and not gt_tags[j]:
+                    iou = self.compute_iou(pred, gt)
+                    if iou > best_iou:
+                        best_iou = iou
+                        best_gt_idx = j
+            
+            if best_iou > self.iou_thresh:
+                self.total_tp += 1
+                gt_matched[best_gt_idx] = True
+                pred_matched[i] = True
+
+        # Process unmatched predictions
+        for i, pred in enumerate(preds):
+            if pred_matched[i]:
+                continue
+            
+            is_ignored = False
+            for j, gt in enumerate(gts):
+                if gt_tags[j]: 
+                    iou = self.compute_iou(pred, gt)
+                    if iou > 0.5:
+                        is_ignored = True
+                        break
+            
+            if not is_ignored:
+                self.total_fp += 1
+        
+        self.total_n_pos += n_pos
+        
+        return self.total_tp, self.total_fp, self.total_n_pos
+
+    def get_metrics(self) -> Dict[str, float]:
+        precision = self.total_tp / (self.total_tp + self.total_fp + 1e-6)
+        recall = self.total_tp / (self.total_n_pos + 1e-6)
+        hmean = 2 * precision * recall / (precision + recall + 1e-6)
+        
+        return {
+            "precision": precision,
+            "recall": recall,
+            "hmean": hmean,
+            "tp": self.total_tp,
+            "fp": self.total_fp,
+            "n_pos": self.total_n_pos
+        }

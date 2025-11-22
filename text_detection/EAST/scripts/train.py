@@ -19,7 +19,7 @@ def train():
         config = yaml.safe_load(f)
 
     device = torch.device(config["device"] if torch.cuda.is_available() else "cpu")
-    print(f"Running on device: {device}")
+    print(f"Training on device: {device}")
 
     # Prepare Dataset & DataLoader
     train_dataset = ICDAR2015Dataset(
@@ -39,7 +39,7 @@ def train():
 
     # Prepare Model
     model = EAST(
-        backbone_name=config["model"].get("backbone", "resnet50"),
+        backbone=config["model"].get("backbone", "resnet50"),
         pretrained=config["model"]["pretrained"]
     ).to(device)
 
@@ -53,7 +53,7 @@ def train():
 
     # Resume training if needed
     checkpoint_dir = "checkpoints/" + config["experiment_name"]
-    last_ckpt = os.path.join(checkpoint_dir, "latest.pth")
+    last_ckpt = os.path.join(checkpoint_dir, f"{config['experiment_name']}_latest.pth")
     start_epoch = 0
     
     if os.path.exists(last_ckpt):
@@ -87,8 +87,8 @@ def train():
             epoch_loss += loss.item()
 
             if (i + 1) % config["train"]["log_interval"] == 0:
-                print(f"Epoch [{epoch + 1}/{config["train"]["max_epochs"]}], "
-                      f"Step [{i + 1}/{len(train_loader)}], "
+                print(f"Epoch [{epoch + 1}/{config['train']['max_epochs']}] | "
+                      f"Step [{i + 1}/{len(train_loader)}] | "
                       f"Loss: {loss.item():.4f}")
 
         scheduler.step()
@@ -104,8 +104,8 @@ def train():
                 "optimizer_state_dict": optimizer.state_dict(),
                 "loss": avg_loss
             }
-            save_checkpoint(state, checkpoint_dir, f"epoch_{epoch + 1}.pth")
-            save_checkpoint(state, checkpoint_dir, "latest.pth")
+            save_checkpoint(state, checkpoint_dir, f"{config['experiment_name']}_epoch{epoch + 1}.pth")
+            save_checkpoint(state, checkpoint_dir, f"{config['experiment_name']}_latest.pth")
 
 if __name__ == "__main__":
     train()
