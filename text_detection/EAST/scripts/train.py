@@ -58,7 +58,7 @@ def train():
     start_epoch = 0
     
     if os.path.exists(last_ckpt):
-        start_epoch = load_checkpoint(last_ckpt, model, optimizer, device)
+        start_epoch = load_checkpoint(last_ckpt, model, optimizer, scheduler, device)
 
     # Training Loop
     model.train()
@@ -103,6 +103,7 @@ def train():
                 "epoch": epoch + 1,
                 "model_state_dict": model.state_dict(),
                 "optimizer_state_dict": optimizer.state_dict(),
+                "scheduler_state_dict": scheduler.state_dict(),
                 "loss": avg_loss
             }
             save_checkpoint(state, checkpoint_dir, f"{config['experiment_name']}_epoch{epoch + 1}.pth")
