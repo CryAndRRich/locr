@@ -13,6 +13,8 @@ def extract(filename: str, folder: str) -> None:
 
 
 if __name__ == "__main__":
+    # Make sure to download the following files into data/ICDAR2015/ before running this script
+    # or change the paths into whatever you have
     training_data_path = "data/ICDAR2015/Training/"
     test_data_path = "data/ICDAR2015/Testing/"
 

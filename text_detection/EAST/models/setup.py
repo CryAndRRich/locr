@@ -157,7 +157,6 @@ std::vector<std::vector<float>> merge_wrapper(
     return lanms::merge_quadrangle_n9(data, iou_threshold);
 }
 
-// CHÚ Ý: Tên module ở đây là 'lanms_cpu'
 PYBIND11_MODULE(lanms_cpu, m) {
     m.doc() = "Locality-Aware NMS (Renamed Version)";
     m.def("merge_quadrangle_n9", &merge_wrapper, "Locality-Aware NMS");

@@ -1,5 +1,7 @@
+
 from typing import List, Tuple
 import numpy as np
+
 import cv2
 from shapely.geometry import Polygon
 
@@ -69,7 +71,7 @@ def get_score_geo(img_size: Tuple[int, int],
             continue
 
         # Find minimum area rectangle (RBOX)
-        rect = cv2.minAreaRect(poly_small.astype(np.float32))
+        rect = cv2.minAreaRect(poly.astype(np.float32)) 
         center, size, angle_deg = rect
         
         # Normalize angle and size
@@ -81,7 +83,7 @@ def get_score_geo(img_size: Tuple[int, int],
 
         # Shrink polygon
         shrunk_poly = shrink_poly(poly_small, r=0.4)
-        if shrunk_poly is None:
+        if shrunk_poly is None: 
             continue
 
         # Draw Score Map
@@ -95,9 +97,11 @@ def get_score_geo(img_size: Tuple[int, int],
         cos_a = np.cos(-angle_rad)
         sin_a = np.sin(-angle_rad)
 
-        # Vectorized computation
-        dx = xs - center[0]
-        dy = ys - center[1]
+        scale_ratio_inv = 1 / scale_ratio
+        xs_512 = xs * scale_ratio_inv
+        ys_512 = ys * scale_ratio_inv
+        dx = xs_512 - center[0]
+        dy = ys_512 - center[1]
         
         # Rotate points to align with rectangle axes
         d1_x = dx * cos_a - dy * sin_a
@@ -124,6 +128,4 @@ def get_score_geo(img_size: Tuple[int, int],
         geo_map[idx_y, idx_x, 3] = d4[valid]
         geo_map[idx_y, idx_x, 4] = angle_rad
     
-    geo_map[:,:,:4] /= img_size[0]
-
     return score_map, geo_map, training_mask

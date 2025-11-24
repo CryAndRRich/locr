@@ -1,11 +1,14 @@
+from typing import Tuple
 import os
 import glob
-from typing import Tuple
-import torch
+
 import numpy as np
 import cv2
+
+import torch
 from torch.utils.data import Dataset
 from torchvision import transforms
+
 from .geometry_utils import get_score_geo
 
 class ICDAR2015Dataset(Dataset):
@@ -50,7 +53,7 @@ class ICDAR2015Dataset(Dataset):
 
     def load_gt(self, img_path: str) -> Tuple[np.ndarray, np.ndarray]:
         """
-        Load Ground Truth text file for a specific image.
+        Load Ground Truth text file for a specific image
         
         Parameters:
             img_path: Path to the image file
