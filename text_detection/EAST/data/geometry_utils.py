@@ -1,9 +1,10 @@
 
 from typing import List, Tuple
-import numpy as np
 
 import cv2
 from shapely.geometry import Polygon
+
+import numpy as np
 
 def shrink_poly(poly: np.ndarray, 
                 r: float = 0.4) -> np.ndarray:

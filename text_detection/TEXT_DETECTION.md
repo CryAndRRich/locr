@@ -10,7 +10,7 @@ Nếu coi cả hệ thống OCR (Optical Character Recognition) là một ngư�
 * **Text Detection** là đôi mắt: Tìm xem chữ nằm ở đâu (đóng khung nó lại)
 * **Text Recognition** là bộ não: Đọc xem trong cái khung đó viết chữ gì
 
-> **Mục tiêu:** Đầu ra của bài toán này thường là các tọa độ bao quanh văn bản (bounding boxes hoặc polygons)
+**Mục tiêu:** Đầu ra của bài toán này thường là các tọa độ bao quanh văn bản (bounding boxes hoặc polygons)
 
 ## Tại sao nó lại khó?
 
@@ -45,5 +45,6 @@ Hiện nay, Deep Learning thống trị lĩnh vực này với 2 hướng đi ch
 ## Mô hình Text Detection
 
 Thư mục này chứa các mã nguồn mô hình kèm notebook thực hành để giải quyết bài toán Text Detection:
+* [EAST](EAST/EAST.md) - Efficient and Accurate Scene Text Detector
 
 *(Danh sách sẽ được cập nhật liên tục trong quá trình học tập)*

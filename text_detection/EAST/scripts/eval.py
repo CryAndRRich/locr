@@ -103,12 +103,9 @@ def evaluate():
     
     results_table = [
         ["Metric", "Value"],
-        ["Precision", f"{metrics['precision']:.4f}"],
-        ["Recall", f"{metrics['recall']:.4f}"],
-        ["H-mean (F1)", f"{metrics['hmean']:.4f}"],
-        ["TP (Care)", metrics["tp"]], # True Positives
-        ["FP", metrics["fp"]], # False Positives
-        ["Num GT (Care)", metrics["n_pos"]] # Number of ground truth positives
+        ["Precision", f"{metrics['precision']}"],
+        ["Recall", f"{metrics['recall']}"],
+        ["H-mean (F1)", f"{metrics['hmean']}"]
     ]
     
     print("\n" + "=" * 40)

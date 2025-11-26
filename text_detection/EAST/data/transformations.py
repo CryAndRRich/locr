@@ -1,8 +1,9 @@
 from typing import List, Tuple
 import random
 
-import numpy as np
 import cv2
+
+import numpy as np
 
 class RandomRotate():
     """

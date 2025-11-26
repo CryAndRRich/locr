@@ -4,3 +4,6 @@
 **/Training/**
 
 lanms.py
+
+*.so
+*.pth
